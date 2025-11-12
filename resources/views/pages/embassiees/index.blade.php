@@ -224,7 +224,7 @@
 
     const map = L.map('map', {
         fullscreenControl: true
-    }).setView([-6.80188562253168, 144.0733101155011], 6);
+    }).setView([1.3544957452433934, 103.81333631449832], 6);
 
     // --- Define Tile Layers ---
     // 1. OpenStreetMap (Peta Jalan) - Ini akan menjadi default

@@ -368,7 +368,7 @@
 
 <script>
 // === Inisialisasi Peta ===
-const map = L.map('map').setView([-4.245820574165665, 122.16203857061076], 5);
+const map = L.map('map').setView([1.3544957452433934, 103.81333631449832], 6);
 
 // === Base Layers ===
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
