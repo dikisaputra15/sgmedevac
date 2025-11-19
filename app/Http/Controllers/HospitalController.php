@@ -84,7 +84,7 @@ class HospitalController extends Controller
 
         $latitude = $hospital->latitude;
         $longitude = $hospital->longitude;
-        $radius_km = 500; // Your desired radius
+        $radius_km = 100; // Your desired radius
 
         // Fetch nearby hospitals (excluding the current one)
         $nearbyHospitals = Hospital::selectRaw("
@@ -120,7 +120,7 @@ class HospitalController extends Controller
 
         $latitude = $hospital->latitude;
         $longitude = $hospital->longitude;
-        $radius_km = 500; // Your desired radius
+        $radius_km = 100; // Your desired radius
 
         // Fetch nearby hospitals (excluding the current one)
         $nearbyHospitals = Hospital::selectRaw("
