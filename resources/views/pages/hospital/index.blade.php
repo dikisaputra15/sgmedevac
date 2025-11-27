@@ -561,7 +561,7 @@ const FilterPanel = L.Control.extend({
                     @endforeach
                 </select>
                 <label>Facility Level:</label>
-                ${['Class A','Class B','Class C','Class D','Public Health Center (PUSKESMAS)'].map(c => `
+                ${['Tertiary','Secondary','Primary'].map(c => `
                     <label style="display:block;font-size:13px;">
                         <input type="checkbox" name="hospitalLevel" value="${c}"> ${c}
                     </label>`).join('')}
