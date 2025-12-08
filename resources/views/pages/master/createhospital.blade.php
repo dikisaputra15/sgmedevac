@@ -828,7 +828,7 @@
             <!-- /.card-header -->
             <div class="card-body">
 
-                <textarea id="summernote2" name="nearest_airport">
+                <textarea id="summernote2" name="nearest_airfield">
                 </textarea>
 
             </div>
