@@ -506,7 +506,7 @@
       <div class="modal-header">
          <div class="d-flex align-items-center">
             <img src="https://pg.concordreview.com/wp-content/uploads/2025/01/hospital_pin-green.png" style="width:30px; height:30px;">
-            <h5 class="modal-title" id="disclaimerLabel">Tertiary — Sub-district Hospital</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Primary — Sub-district Hospital</h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -557,7 +557,7 @@
       <div class="modal-header">
         <div class="d-flex align-items-center">
             <img src="https://pg.concordreview.com/wp-content/uploads/2025/01/hospital-pin-red.png" style="width:30px; height:30px;">
-            <h5 class="modal-title" id="disclaimerLabel">Primary — National Referral Hospital</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Tertiary — National Referral Hospital</h5>
         </div>
          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
