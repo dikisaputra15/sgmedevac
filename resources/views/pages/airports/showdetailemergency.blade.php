@@ -209,6 +209,11 @@
                 <small>Air Charter</small>
             </a>
 
+            <a href="{{ url('police') }}" class="btn btn-danger d-flex flex-column align-items-center p-3 {{ request()->is('police') ? 'active' : '' }}">
+                <i class="bi bi-person-badge" style="width: 24px; height: 24px;"></i>
+                <small>Police</small>
+            </a>
+
             <!-- Button 7 -->
             <a href="{{ url('embassiees') }}" class="btn btn-danger d-flex flex-column align-items-center p-3 {{ request()->is('embassiees') ? 'active' : '' }}">
             <img src="{{ asset('images/icon-embassy.png') }}" style="width: 24px; height: 24px;">
@@ -612,6 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nearbyAirports = @json($nearbyAirports);
     const nearbyHospitals = @json($nearbyHospitals);
+    const nearbyPolices = @json($nearbyPolices);
     let radiusKm = {{ $radius_km }};
 
     let map, mainAirportMarker, radiusCircle, routingControl = null;
@@ -620,6 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const DEFAULT_MAIN_AIRPORT_ICON_URL = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png';
     const DEFAULT_HOSPITAL_ICON_URL     = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png';
     const DEFAULT_AIRPORT_ICON_URL      = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png';
+    const DEFAULT_POLICE_ICON_URL = 'https://png.pngtree.com/png-vector/20221211/ourmid/pngtree-minimal-location-map-icon-logo-symbol-vector-design-transparent-background-png-image_6520892.png';
 
     const mainAirportIcon = new L.Icon({
         iconUrl: DEFAULT_MAIN_AIRPORT_ICON_URL,
@@ -695,6 +702,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!airportCategories.some(cat => allowed.includes(cat))) return;
             }
 
+            // Filter police
+           if (type === 'Police' && filters.policeCategories?.length > 0) {
+                const categories = (item.category || '')
+                    .split(',')
+                    .map(c => c.trim().toLowerCase());
+
+                const allowed = filters.policeCategories.map(c => c.toLowerCase());
+
+                if (!categories.some(cat => allowed.includes(cat))) return;
+            }
+
             const icon = L.icon({
                 iconUrl: item.icon || defaultIconUrl,
                 iconSize: [24, 24], iconAnchor: [12, 24], popupAnchor: [0, -20]
@@ -704,9 +722,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = item.name || item.airport_name || 'N/A';
             const level = item.facility_level || item.category || 'N/A';
             const distanceText = `<strong>Distance:</strong> ${distance.toFixed(2)} km`;
-            const detailUrl = (type === 'Airport')
-                ? `/airports/${item.id}/detail`
-                : `/hospitals/${item.id}`;
+            let detailUrl = '#';
+
+            if (type === 'Airport') {
+                detailUrl = `/airports/${item.id}/detail`;
+            } else if (type === 'Hospital') {
+                detailUrl = `/hospitals/${item.id}`;
+            } else if (type === 'Police') {
+                detailUrl = `/police/${item.id}/detail`;
+            }
 
             marker.bindPopup(`
                 <div style="font-size:13px;">
@@ -762,20 +786,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bounds.isValid()) map.fitBounds(bounds, { padding: [50, 50] });
     }
 
-    function updateMarkers(filterType, hospitalLevels, airportClassifications) {
+    function updateMarkers(filterType, hospitalLevels, airportClassifications, policeCategories) {
         nearbyMarkersGroup.clearLayers();
         if (radiusCircle) map.removeLayer(radiusCircle);
         addMainAirportAndCircle();
 
-        const filters = { hospitalLevels, airportClassifications };
+        const filters = { hospitalLevels, airportClassifications, policeCategories };
 
         if (filterType === 'hospital') {
             addNearbyMarkers(nearbyHospitals, DEFAULT_HOSPITAL_ICON_URL, 'Hospital', filters);
         } else if (filterType === 'airport') {
             addNearbyMarkers(nearbyAirports, DEFAULT_AIRPORT_ICON_URL, 'Airport', filters);
-        } else {
+        } else if (filterType === 'police') {
+            addNearbyMarkers(nearbyPolices, DEFAULT_POLICE_ICON_URL, 'Police', filters);
+        }
+          else {
             addNearbyMarkers(nearbyHospitals, DEFAULT_HOSPITAL_ICON_URL, 'Hospital', filters);
             addNearbyMarkers(nearbyAirports, DEFAULT_AIRPORT_ICON_URL, 'Airport', filters);
+            addNearbyMarkers(nearbyPolices, DEFAULT_POLICE_ICON_URL, 'Police', filters);
         }
 
         fitMapToBounds();
@@ -800,6 +828,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <option value="all">Show All</option>
                     <option value="hospital">Hospitals</option>
                     <option value="airport">Airports</option>
+                    <option value="police">Police</option>
                 </select>
 
                 <div id="hospitalFilter" style="display:none;">
@@ -820,6 +849,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         </label>`).join('')}
                 </div>
 
+                <div id="policeFilter" style="display:none;margin-top:8px;">
+                    <strong>Police Category:</strong><br>
+                    ${[
+                        'Singapore Police Force (Police HQ)',
+                        'Police Divisions (Land Divisions)',
+                        'Neighbourhood Police Centre (NPC)',
+                        'Neighbourhood Police Post (NPP)'
+                    ].map(cat => `
+                        <label style="display:block;font-size:13px;">
+                            <input type="checkbox" name="policeCategory" value="${cat}"> ${cat}
+                        </label>
+                    `).join('')}
+                </div>
+
                 <button id="resetFilter" class="btn btn-sm btn-secondary mt-3 w-100">Reset All</button>
             `;
 
@@ -832,7 +875,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedType = document.querySelector('#mapFilter')?.value || 'all';
         const selectedHospitalLevels = Array.from(document.querySelectorAll('input[name="hospitalLevel"]:checked')).map(el => el.value);
         const selectedAirportClasses = Array.from(document.querySelectorAll('input[name="airportClass"]:checked')).map(el => el.value);
-        updateMarkers(selectedType, selectedHospitalLevels, selectedAirportClasses);
+        const selectedPoliceCategories = Array.from(document.querySelectorAll('input[name="policeCategory"]:checked')).map(el => el.value);
+        updateMarkers(selectedType, selectedHospitalLevels, selectedAirportClasses, selectedPoliceCategories);
     }
 
     initializeMap();
@@ -854,9 +898,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const val = e.target.value;
             document.getElementById('hospitalFilter').style.display = val === 'hospital' ? 'block' : 'none';
             document.getElementById('airportFilter').style.display = val === 'airport' ? 'block' : 'none';
+            document.getElementById('policeFilter').style.display = val === 'police' ? 'block' : 'none';
             refreshFilters();
         }
-        if (e.target.name === 'hospitalLevel' || e.target.name === 'airportClass') {
+        if (e.target.name === 'hospitalLevel' || e.target.name === 'airportClass' || e.target.name === 'policeCategory') {
             refreshFilters();
         }
     });
@@ -867,6 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('mapFilter').value = 'all';
             document.getElementById('hospitalFilter').style.display = 'none';
             document.getElementById('airportFilter').style.display = 'none';
+            document.getElementById('policeFilter').style.display = 'none';
             radiusKm = {{ $radius_km }};
             document.getElementById('radiusRange').value = radiusKm;
             document.getElementById('radiusLabel').textContent = radiusKm;
