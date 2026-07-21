@@ -203,7 +203,7 @@
       <div class="modal-header">
         <div class="d-flex align-items-center">
              <img src="{{ asset('images/Layer4.png') }}" style="width:15px; height:15px;">
-            <h5 class="modal-title" id="disclaimerLabel">Police Station</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Neighbourhood Police Post (NPP)</h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -220,7 +220,7 @@
       <div class="modal-header">
         <div class="d-flex align-items-center">
             <img src="{{ asset('images/Layer3.png') }}" style="width:15px; height:15px;">
-            <h5 class="modal-title" id="disclaimerLabel">Provincial Police Command (PPC)</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Neighbourhood Police Centre (NPC)</h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -237,7 +237,7 @@
       <div class="modal-header">
         <div class="d-flex align-items-center">
             <img src="{{ asset('images/Layer2.png') }}" style="width:15px; height:15px;">
-            <h5 class="modal-title" id="disclaimerLabel">Divisional Command</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Police Divisions (Land Divisions)</h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -254,7 +254,7 @@
       <div class="modal-header">
         <div class="d-flex align-items-center">
             <img src="{{ asset('images/Layer1.png') }}" style="width:15px; height:15px;">
-            <h5 class="modal-title" id="disclaimerLabel">Royal Papua New Guinea Constabulary (Commissioner HQ)</h5>
+            <h5 class="modal-title" id="disclaimerLabel">Singapore Police Force (Police HQ)</h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
