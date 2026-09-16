@@ -1856,7 +1856,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div id="hospitalFilter" style="display:none;">
                 <strong>Facility Level:</strong><br>
-                ${['Class A','Class B','Class C','Class D','Public Health Center (PUSKESMAS)']
+                ${['Tertiary','Secondary','Primary']
                     .map(lvl => `<label style="display:block;font-size:13px;">
                         <input type="checkbox" name="hospitalLevel" value="${lvl}"> ${lvl}
                     </label>`).join('')}
@@ -1864,7 +1864,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div id="airportFilter" style="display:none;margin-top:8px;">
                 <strong>Category:</strong><br>
-                ${['International','Domestic','Military','Regional','Private']
+                ${['International','Domestic','Military','Regional','Private','Helipad']
                     .map(cls => `<label style="display:block;font-size:13px;">
                         <input type="checkbox" name="airportClass" value="${cls}"> ${cls}
                     </label>`).join('')}
@@ -1873,12 +1873,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <div id="policeFilter" style="display:none;margin-top:8px;">
                 <strong>Police Category:</strong><br>
                 ${[
-                    'Indonesian National Police (Polri) HQ',
-                    'Provincial Police (Polda)',
-                    'Municipality Police (Polres)',
-                    'District Police (Polsek)',
-                    'Police Mobile Brigade (Brimob)',
-                    'Police Bomb Squad (Gegana)'
+                    'National Police (HQ)',
+                    'Police Divisions (Land Divisions)',
+                    'Neighbourhood Police Centre (NPC)',
+                    'Neighbourhood Police Post (NPP)'
                 ].map(cat => `
                     <label style="display:block;font-size:13px;">
                         <input type="checkbox" name="policeCategory" value="${cat}"> ${cat}

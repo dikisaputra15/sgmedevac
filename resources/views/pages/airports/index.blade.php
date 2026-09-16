@@ -551,7 +551,7 @@ const FilterPanel = L.Control.extend({
                     @endforeach
                 </select>
                 <label>Airport Category:</label>
-                ${['International','Domestic','Military','Regional','Private'].map(c => `
+                ${['International','Domestic','Military','Regional','Private','Helipad'].map(c => `
                     <label style="display:block;font-size:13px;">
                         <input type="checkbox" name="airportClass" value="${c}"> ${c}
                     </label>`).join('')}
