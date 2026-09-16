@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Hospital;
 use App\Models\Airport;
 use App\Models\Police;
+use App\Models\Embassiees;
 use App\Models\Provincesregion;
 use Illuminate\Support\Facades\DB;
 
@@ -128,7 +129,7 @@ class HospitalController extends Controller
             id, name, icon, latitude, longitude, facility_level, facility_category,
             ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
         ", [$latitude, $longitude, $latitude])
-        ->having('distance', '<=', $radius_km)
+        ->having('distance', '<=', 500)
         ->where('id', '!=', $hospital->id) // Exclude the current hospital
         ->orderBy('distance')
         ->get();
@@ -138,7 +139,7 @@ class HospitalController extends Controller
             id, airport_name AS name, icon, latitude, longitude, category,
             ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
         ", [$latitude, $longitude, $latitude])
-        ->having('distance', '<=', $radius_km)
+        ->having('distance', '<=', 500)
         ->orderBy('distance')
         ->get();
 
@@ -153,11 +154,17 @@ class HospitalController extends Controller
                 * sin( radians( latitude ) )
             )) AS distance
         ", [$latitude, $longitude, $latitude])
-        ->having('distance', '<=', $radius_km)
+        ->having('distance', '<=', 500)
         ->orderBy('distance')
         ->get();
 
-        return view('pages.hospital.showdetailemergency', compact('hospital','nearbyHospitals','radius_km','nearbyAirports','nearbyPolices'));
+        // Match the maximum radius available in the map filter.
+        $nearbyEmbassy = Embassiees::selectRaw('*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->having('distance', '<=', 500)
+            ->orderBy('distance')
+            ->get();
+
+        return view('pages.hospital.showdetailemergency', compact('hospital','nearbyHospitals','radius_km','nearbyAirports','nearbyPolices','nearbyEmbassy'));
     }
 
     public function filter(Request $request)
